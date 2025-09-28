@@ -26,7 +26,7 @@
 %	tax/category=S,  % commented as this setting matches the initial value
 %	tax/rate=19,  % commented as this setting matches the initial value
 	unit=hour,
-	seller/vatid = {\fromvatid},
+%	seller/vatid = {\fromvatid},
 %	seller/id=1123,% If no VatID exists a seller/id is required. This might be an ID provided by the buyer
 	seller/name = {\fromname\space(\fromfullname)},
 	seller/postcode = {\frompostalcode},
@@ -42,7 +42,7 @@
 	buyer/city ={Hamburg},
 	buyer/country = DE,
 	buyer/address = {Address 1\\Address 2},
-	buyer/vatid = {DE123456789},
+% 	buyer/vatid = {DE123456789},
 	buyer/email = {invoice@example.org},
 	currency=€,
 	payment-terms={Zahlbar innerhalb von\space\paymentdays\space Tagen},% either this one or the due-date below is required
@@ -50,8 +50,11 @@
 	payment-means / type = 58, % SEPA Übereisung,
 	payment-means / iban = {\fromiban},
 	payment-means / account-holder = {\fromfullname},
-	payment-means / bic = {\frombic}
+	payment-means / bic = {\frombic},
+%	tax/add-exemption-reason-auto={E={{\Additionallegalinformation}}}
 }
+
+% \InitVATExempt{E}% Intra-community supply
 
 \usepackage{fontspec}
 \setmainfont{Helvetica}
@@ -68,6 +71,7 @@ hiermit stelle ich Ihnen meine Arbeit im Rahmen des Projektes XX in Rechnung. Di
 
 \vspace{\baselineskip}
 \PrintInvoiceTabular
+\usekomavar{Additionallegalinformation}\\
 
 Ich bitte Sie den oben genannten Betrag binnen \paymentdays{} Tagen auf unten genanntes Konto zu überweisen.
 
@@ -77,7 +81,7 @@ Ich bitte Sie den oben genannten Betrag binnen \paymentdays{} Tagen auf unten ge
 Bank: \tab\usekomavar{frombank}\\
 
 \usekomavar*{fromtaxid} \usekomavar{fromtaxid}\\
-\usekomavar*{fromvatid} \usekomavar{fromvatid}
+% \usekomavar*{fromvatid} \usekomavar{fromvatid}
 
 \end{letter}
 \end{document}

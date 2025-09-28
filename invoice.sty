@@ -17,7 +17,7 @@
 
 \keys_define:nn {zugferd/invoice}{
 	default-vat .tl_set:N =  \defaultVAT,
-	default-vat .initial:n = 19,
+	default-vat .initial:n = 0,
 	format .code:n = \PassOptionsToPackage{format=#1}{zugferd},
 	format .initial:n = xrechnung3.0,
 }
@@ -61,6 +61,7 @@
 \newcommand{\fromemail}{info@example.com}
 \newcommand{\fromname}{yourcompany}
 \newcommand{\paymentdays}{14}
+\newcommand{\Additionallegalinformation}{Im\space ausgewiesenen\space Betrag\space ist\space gemäß\space §\space 19\space UStG\space keine\space Umsatzsteuer\space enthalten.}
 % END VARIABLES
 
 \KOMAoptions{fromlogo=true,fromrule=afteraddress,fromphone,fromemail,fromlogo,fromalign=right,enlargefirstpage=false,parskip=full,numericaldate=true, addrfield=topaligned}
@@ -77,8 +78,10 @@
 \setkomavar{frombic}{\frombic}
 \newkomavar[Steuernummer:]{fromtaxid}
 \setkomavar{fromtaxid}{\fromtaxid}
-\newkomavar[Umsatzsteuer-Identifikationsnummer:]{fromvatid}
-\setkomavar{fromvatid}{\fromvatid}
+\newkomavar[Additionallegalinformation:]{Additionallegalinformation}
+\setkomavar{Additionallegalinformation}{\Additionallegalinformation}
+% \newkomavar[Umsatzsteuer-Identifikationsnummer:]{fromvatid}
+% \setkomavar{fromvatid}{\fromvatid}
 \newkomavar[Name:]{fromaccount}
 \setkomavar{fromaccount}{\fromfullname}
 \setkomavar{frombank}{\frombank}
@@ -120,12 +123,12 @@
 %Initialize VAT rates for (5),7,(16) and 19 % VAT
 %These rates are the name to be used inside \AddInvoiceItem as defined before.
 %\InitVAT{16}
-\InitVAT{19}
+% \InitVAT{19}
 %\InitVAT{5}
 %\InitVAT{7}
 
 % Tax initialisation with a different Code than S in this example Syntax would be
-% \InitVAT{0}[AE]
+\InitVAT{0}[AE]
 
 
 \newcommand*{\SetDefaultVAT}[1]{\def\defaultVAT{#1}}
@@ -193,7 +196,7 @@
 			\PrintVatSum[{\fp_use:c {g__ptxcd_invoice_base_vat##1_fp}}]{##1 }{\fp_use:c {g__ptxcd_invoice_sum_vat##1_fp}}
 		}
 	}
-	\PrintInvoiceSum{brutto}{\fp_eval:n {\g__ptxcd_tax_total_fp +  \g__ptxcd_invoice_total_fp }}
+	% \PrintInvoiceSum{brutto}{\fp_eval:n {\g__ptxcd_tax_total_fp +  \g__ptxcd_invoice_total_fp }}
 	% TODO add support for allowance, chargeTotal, and prepaid
 	\zugferd_write_Summation:nnnnnnnn
 		{\fp_use:N  \g__ptxcd_invoice_sum_fp}% LineTotalAmount
@@ -221,7 +224,8 @@
 	\zugferd_write_Item:ennnnnn {tax/rate=#1, tax/category=\use:c {__ptxcd_invoice_type_code#1:},#5} {\theinvoiceitem} {} {#3} {#4} {#2} {\fp_use:N \g__ptxcd_invoice_item_fp}
 
 	&#2% Anzahl
-	&#3\space(\printVAT{#1}~MwSt.)% Beschreibung mit Angabe der MwSt, in Klammern
+	% &#3\space(\printVAT{#1}~MwSt.)% Beschreibung mit Angabe der MwSt, in Klammern
+	&#3\space% Beschreibung ohne Angabe der MwSt,
 	&\num{#4}%\num[round-mode=places,output-decimal-marker={,},round-pad = false]{#4}\tl_show:n {#4}%Einzelpreis
 	&\exp_args:Nx \num{\fp_use:N \g__ptxcd_invoice_item_fp}
 	\tabularnewline
@@ -231,11 +235,11 @@
 	\PrintSum{\csname invoicesum#1name\endcsname}{#2}
 }
 
-\newcommand*{\PrintVatSum}[3][]{
-	\PrintSum{\invoicesumvatname[#1]{#2}}{#3}
-}
+%\newcommand*{\PrintVatSum}[3][]{
+	% \PrintSum{\invoicesumvatname[#1]{#2}}{#3}
+%}
 
-\newcommand*{\invoicesumvatname}[2][]{MwSt.~\printVAT{#2}\tl_if_empty:nF {#1} {\space(\num[round-precision=2]{#1}\TableCurrency)}}
+% \newcommand*{\invoicesumvatname}[2][]{MwSt.~\printVAT{#2}\tl_if_empty:nF {#1} {\space(\num[round-precision=2]{#1}\TableCurrency)}}
 \renewcommand*{\theinvoiceitem}{\int_compare:nNnT {\value{invoiceitem}}<{10}{0}\arabic{invoiceitem}}
 
 \newcommand*{\PrintSum}[2]{
@@ -244,8 +248,9 @@
 
 \ExplSyntaxOff
 
-\newcommand*{\invoicesumnettoname}{Summe (Netto)}
-\newcommand*{\invoicesumbruttoname}{Summe (Brutto)}
+% \newcommand*{\invoicesumnettoname}{Summe (Netto)}
+% \newcommand*{\invoicesumbruttoname}{Summe (Brutto)}
+\newcommand*{\invoicesumnettoname}{Summe}
 \newcommand*{\invoicesumseparator}{:\space}
 
 \newcommand*{\TableCurrency}{\,€}
